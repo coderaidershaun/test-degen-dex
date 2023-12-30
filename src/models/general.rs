@@ -58,18 +58,54 @@ impl TimeBars for PnlBar {
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct TradeDetail{
-  pub tx_hash: f64,
-  pub block_num: f64,
-  pub block_time: f64,
+pub struct TradeTx{
+  pub tx_hash: String,
+  pub block_num: u64,
+  pub block_time: String,
   pub side: Side,
   pub volume_base: f64,
   pub volume_quote: f64,
   pub price_quote: f64,
-  pub account_addr: f64,
-  pub account_buys: f64,
-  pub account_sells: f64,
+  pub account_addr: String,
+  pub account_trades_open: usize,
+  pub account_won: u64,
+  pub account_lost: u64,
   pub account_unrealized_pnl: f64,
   pub account_realized_pnl: f64,
-  pub account_external_pnl: f64
+  pub account_external_pnl: f64,
+  pub account_open_interest_base: f64
+}
+
+impl TradeTx {
+  pub fn new(
+    tx_hash: String, block_num: u64, block_time: String, side: Side, account_addr: String
+  ) -> Self { 
+    Self { tx_hash, block_num, block_time, side, volume_base: 0.0, volume_quote: 0.0, price_quote: 0.0, account_addr, account_won: 0, 
+      account_lost: 0, account_trades_open: 0, account_unrealized_pnl: 0.0, account_realized_pnl: 0.0, account_external_pnl: 0.0, 
+      account_open_interest_base: 0.0 }
+  }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct Analysis {
+  pub dollar_bars: Option<Vec<DollarBar>>,
+  pub volume_bars: Option<Vec<VolumeBar>>,
+  pub pnl_bars: Option<Vec<PnlBar>>,
+  pub transactions: Option<Vec<TradeTx>>
+}
+
+impl TimeBars for Analysis {
+  fn new() -> Self {
+    Self {
+      dollar_bars: None, volume_bars: None, pnl_bars: None, transactions: None
+    }
+  }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct Criteria {
+  pub is_dollar_bars: bool,
+  pub is_volume_bars: bool,
+  pub is_pnl_bars: bool,
+  pub is_transactions_bars: bool,
 }

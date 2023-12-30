@@ -55,6 +55,18 @@ impl AddressRecords {
     unrealized_pnl
   }
 
+  /// Count Open Positions
+  /// Returns the number of open positions
+  pub fn count_open_positions(&self) -> usize {
+    let mut counts = 0;
+    for open_pos in &self.positions_open {
+      if open_pos.remaining_amount_base > 0.0 {
+        counts += 1;
+      }
+    }
+    counts
+  }
+
   /// Get Open Interest
   /// Returns open interest
   pub fn get_open_interest(&self) -> f64 {
